@@ -4,7 +4,7 @@
 
 ## [ ] data visualization
 
-    - [ ] histogram : 
+    - [x] histogram : 
         > histogram.py 
         > Which Hogwarts course has a homogeneous score distribution between all four houses?
     
