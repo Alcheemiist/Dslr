@@ -2,68 +2,60 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 def separate_houses(data):
-    houses_columns = ["Ravenclaw", "Gryffindor", "Slytherin", "Hufflepuff"]
-
     Ravenclaw = data[data["Hogwarts House"] == "Ravenclaw"]
-    print("Ravenclaw house : ", len(Ravenclaw))
-
     Gryffindor = data[data["Hogwarts House"] == "Gryffindor"]
-    print("Gryffindor house : ",len( Gryffindor))
-
     Slytherin = data[data["Hogwarts House"] == "Slytherin"]
-    print("Slytherin house : ", len(Slytherin))
-
     Hufflepuff = data[data["Hogwarts House"] == "Hufflepuff"]
-    print("Hufflepuff house : ", len(Hufflepuff))
-
     return Ravenclaw, Gryffindor, Slytherin, Hufflepuff
 
-if __name__ == "__main__":
-    print("This is histogram.py")
-    # Read Data
-    input_file = "../datasets/dataset_train.csv"
-    data = pd.read_csv(input_file)
 
+if __name__ == "__main__":
+    input_file = "../datasets/dataset_train.csv"
+
+    data = pd.read_csv(input_file)
     print("len data : ", len(data), "\n")
 
-    # Separate Data into houses
     Ravenclaw, Gryffindor, Slytherin, Hufflepuff = separate_houses(data)
 
-    
-    # Get metrics for each house and sort them by standard deviation
-    Ravenclaw_metrics = Ravenclaw.describe().loc[["mean", "std"]].T
-    Gryffindor_metrics = Gryffindor.describe().loc[["mean", "std"]].T
-    Slytherin_metrics = Slytherin.describe().loc[["mean", "std"]].T
-    Hufflepuff_metrics = Hufflepuff.describe().loc[["mean", "std"]].T
+    Ravenclaw_metrics = Ravenclaw.describe().loc[["mean", "std"]]
+    Gryffindor_metrics = Gryffindor.describe().loc[["mean", "std"]]
+    Slytherin_metrics = Slytherin.describe().loc[["mean", "std"]]
+    Hufflepuff_metrics = Hufflepuff.describe().loc[["mean", "std"]]
 
-    Ravenclaw_metrics.sort_values(by="std", ascending=True, inplace=True)
-    Gryffindor_metrics.sort_values(by="std", ascending=True, inplace=True)
-    Slytherin_metrics.sort_values(by="std", ascending=True, inplace=True)
-    Hufflepuff_metrics.sort_values(by="std", ascending=True, inplace=True)
+    Ravenclaw_metrics = Ravenclaw_metrics.drop('Index', axis=1)
+    Gryffindor_metrics = Gryffindor_metrics.drop('Index', axis=1)
+    Slytherin_metrics = Slytherin_metrics.drop('Index', axis=1)
+    Hufflepuff_metrics = Hufflepuff_metrics.drop('Index', axis=1)
 
-    # print("Ravenclaw_metrics : \n", Ravenclaw_metrics.iloc[0])
-    # print("\nGryffindor_metrics : \n", Gryffindor_metrics.iloc[0])
-    # print("\nSlytherin_metrics : \n", Slytherin_metrics.iloc[0])
-    # print("\nHufflepuff_metrics : \n", Hufflepuff_metrics.iloc[0])
+    # sort by standard deviation
+    Ravenclaw_metrics = Ravenclaw_metrics.T.sort_values(by="std")
+    Gryffindor_metrics = Gryffindor_metrics.T.sort_values(by="std")
+    Slytherin_metrics = Slytherin_metrics.T.sort_values(by="std")
+    Hufflepuff_metrics = Hufflepuff_metrics.T.sort_values(by="std")
 
-    courses = ['Arithmancy', 'Astronomy', 'Herbology', 'Defense Against the Dark Arts',
-       'Divination', 'Muggle Studies', 'Ancient Runes', 'History of Magic',
-       'Transfiguration', 'Potions', 'Care of Magical Creatures', 'Charms',
-       'Flying']
-    Ravenclaw.drop(columns=['Index', 'Hogwarts House', 'First Name', 'Last Name', 'Birthday','Best Hand',], inplace=True)
-    print(Ravenclaw.columns)
+    # Gryffindor_courses = Gryffindor_metrics.index
+    # Slytherin_courses = Slytherin_metrics.index
+    # Hufflepuff_courses = Hufflepuff_metrics.index
 
-    plt.figure(figsize=(10, 8))
-    plt.barh(courses, Ravenclaw_metrics['std'])
-    plt.xlabel('Standard Deviation')
+    fig, ax = plt.subplots(figsize=(12, 8))
+    bar_width = 0.2
+    courses = Ravenclaw_metrics.index
+
+    r1 = range(len(Ravenclaw_metrics['std']))
+    r2 = [x + bar_width for x in r1]
+    r3 = [x + bar_width for x in r2]
+    r4 = [x + bar_width for x in r3]
+
+    plt.bar(r1, Ravenclaw_metrics['std'], color='b', width=bar_width, edgecolor='grey', label='Ravenclaw')
+    plt.bar(r2, Gryffindor_metrics['std'], color='r', width=bar_width, edgecolor='grey', label='Gryffindor')
+    plt.bar(r3, Hufflepuff_metrics['std'], color='y', width=bar_width, edgecolor='grey', label='Hufflepuff')
+    plt.bar(r4, Slytherin_metrics['std'], color='g', width=bar_width, edgecolor='grey', label='Slytherin')
+
+    plt.xlabel('Courses', fontweight='bold')
+    plt.ylabel('Standard Deviation')
+    plt.xticks([r + bar_width for r in range(len(Ravenclaw_metrics['std']))], courses, rotation=90)
+    plt.title('Standard Deviation of Course Scores by House')
+    plt.ylim(0, 100) 
+    plt.legend()
     plt.show()
-    exit()
-    plt.title('Standard Deviation of Course Scores for Ravenclaw')
-    plt.gca().invert_yaxis()  # Invert y axis for better readability
-    plt.show()
-
-
-    plt.show()
-    

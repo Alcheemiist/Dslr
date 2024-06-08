@@ -61,18 +61,10 @@ def calcul_max(data):
     return format(max, '.6f')
 
 if __name__ == "__main__":
-    print("__Describe Dataset Program___")
     input_file = "../datasets/dataset_train.csv"
-
-    # Load the dataset
     data = pd.read_csv(input_file)
-    # print(data.columns)
-
-    # Select numerical features
     num_data = data[["Arithmancy","Astronomy","Herbology","Defense Against the Dark Arts","Divination","Muggle Studies","Ancient Runes","History of Magic","Transfiguration","Potions","Care of Magical Creatures","Charms","Flying"]]
-    # print(num_data.columns)
 
-    # define global statistics variables
     G_mean = []
     G_count = []
     G_std = []
@@ -108,5 +100,3 @@ if __name__ == "__main__":
     
     stats = stats.set_index("Feature")
     print(stats.transpose())
-    print("\n-----")
-    # print(num_data.describe())
